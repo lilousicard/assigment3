@@ -25,7 +25,7 @@ void  parse(char *line, char **argv)
 int main(){
 	char user_input[MAX_LENGTH];
 	int index = 0;
-	while (fgets(user_input, 50, stdin) != NULL) {
+	while (fgets(user_input, 30, stdin) != NULL) {
 		user_input[strlen(user_input)-1] = 0;
 		index ++;
     	int childID = fork();
