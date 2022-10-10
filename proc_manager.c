@@ -71,7 +71,7 @@ int main(){
     	dup2(fds, 2);
 
     	printf("Finished child %d pid of parent %d\n",pid,getpid());
-
+	fflush(NULL);
     	if (WIFEXITED(status)) {
             fprintf(stderr, "Exited with exitcode = %d\n", WEXITSTATUS(status));
      	} else if (WIFSIGNALED(status)) {
