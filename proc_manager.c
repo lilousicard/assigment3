@@ -9,27 +9,15 @@
 #define MAX_LENGTH 30
 #define MAX_LINE 100
 
-void  parse(char *line, char **argv)
-{
-     while (*line != '\0') {       /* if not the end of line ....... */ 
-          while (*line == ' ' || *line == '\t' || *line == '\n')
-               *line++ = '\0';     /* replace white spaces with 0    */
-          *argv++ = line;          /* save the argument position     */
-          while (*line != '\0' && *line != ' ' && 
-                 *line != '\t' && *line != '\n') 
-               line++;             /* skip the argument until ...    */
-     }
-     *argv = 0;                 /* mark the end of argument list  */
-}
-
 int main(){
 	char user_input[MAX_LENGTH];
 	int index = 0;
 	while (fgets(user_input, 30, stdin) != NULL) {
-		user_input[strlen(user_input)-1] = 0;
+		user_input[strlen(user_input)-1] = 0;//Remove \n character
 		index ++;
     	int childID = fork();
     	if (childID == 0){
+    		//Start Child process
     		char fileO[MAX_LENGTH] = {};
     		char fileE[MAX_LENGTH] = {};
     		sprintf(fileO, "%d%s", getpid(),".out");
@@ -41,11 +29,17 @@ int main(){
     		dup2(fds, 2);
 
     		//populate argument_list[]
-    		//char* argument_list[] = {"wc", "proc_manger.c", NULL}; // NULL terminated array of char* strings
-
+    		//used code from https://stackoverflow.com/questions/15472299/split-string-into-tokens-and-save-them-in-an-array
     		char *argument_list[MAX_LENGTH];	
+		    int i = 0;
+		    char *p = strtok(user_input," ");
 
-    		parse(user_input,argument_list);
+		    while (p != NULL)
+		    {
+		        argument_list[i++] = p;
+		        p = strtok (NULL, " ");
+		    }
+		    argument_list[i] = NULL;
 
 
     		printf("Starting command %d: child %d pid of parent %d\n",index,getpid(),getppid());
@@ -60,9 +54,9 @@ int main(){
     		close(fd);
     		close(fds);
     		exit(0);
-    		}
+    		}//End Child process
 	}
-	printf("pressed control + d\n");
+	//printf("pressed control + d\n");
 	int pid, status;
 	//PARENT PROCESS
     while ( (pid = wait(&status)) > 0) {
